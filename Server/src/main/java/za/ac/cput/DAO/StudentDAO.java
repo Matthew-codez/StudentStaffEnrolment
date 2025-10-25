@@ -1,0 +1,84 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package za.ac.cput.DAO;
+
+/**
+ *
+ * @author user
+ */
+import java.sql.*;
+import java.util.ArrayList;
+import za.ac.cput.Database.DBConnection;
+import za.ac.cput.domain.Student;
+
+public class StudentDAO {
+
+    private Connection conn;
+    private Statement stmt;
+    private PreparedStatement pstmt;
+
+    public ArrayList<Student> getAllStudents() {
+        ArrayList<Student> studentList = new ArrayList<>();
+        try {
+            conn = DBConnection.derbyConnection();
+            String studentSql = "SELECT * FROM STUDENT";
+            pstmt = this.conn.prepareStatement(studentSql);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs != null) {
+                while (rs.next()) {
+                    studentList.add(new Student(rs.getInt("studentNum"),
+                            rs.getString("studentName")));
+                }
+                rs.close();
+            }
+        } catch (SQLException ex) {
+            System.out.println("Exception: " + ex.getMessage());
+        } finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception ex) {
+                System.out.println("Exception: " + ex.getMessage());
+            }
+        }
+        return studentList;
+    }
+
+    public void addStudent(Student student) {
+        System.out.println("Trying to add student");
+        int ok;
+
+        try {
+            conn = DBConnection.derbyConnection();
+            String sql = "INSERT INTO STUDENT (student_num, student_name) VALUES(?,?)";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, student.getStudentNum());
+            pstmt.setString(2, student.getStudentName());
+            ok = pstmt.executeUpdate();
+
+            if (ok > 0) {
+                System.out.println("Student added: " + student.getStudentNum());
+            }
+        } catch (SQLException sqlEx) {
+            System.out.println("SQL Error adding student" + sqlEx.getMessage());
+        } finally {
+            try {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException sqlEx) {
+                System.out.println("SQL Error " + sqlEx.getMessage());
+            }
+        }
+    }
+
+}
