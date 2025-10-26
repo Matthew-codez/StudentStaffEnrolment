@@ -46,6 +46,11 @@ public class Client extends JFrame {
     private JLabel newStudentNumber;
     private JTextField txtCourseId;
     private JTextField txtCourseNames;
+    
+    private JButton btnLogoutStudent;
+    private JButton btnExitStudent;
+    private JButton btnLogoutAdmin;
+    private JButton btnExitAdmin;
 
     private final String Url = "jdbc:derby://localhost:1527/StudentEnrollmentDB";
     private final String Username = "administrator";
@@ -175,6 +180,18 @@ public class Client extends JFrame {
         centerPnl.add(enrolledBtnPnl);
 
         pnl.add(centerPnl, BorderLayout.CENTER);
+        
+        JPanel southPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Aligns buttons to the right
+        btnLogoutStudent = new JButton("Logout");
+        btnExitStudent = new JButton("Exit Application");
+        
+        southPnl.add(btnLogoutStudent);
+        southPnl.add(btnExitStudent);
+        
+        pnl.add(southPnl, BorderLayout.SOUTH);
+
+        btnLogoutStudent.addActionListener(e -> cardLayout.show(mainPnl, "Login")); // Go back to login
+        btnExitStudent.addActionListener(e -> System.exit(0)); // Close the app
 
         return pnl;
     }
@@ -233,6 +250,18 @@ public class Client extends JFrame {
         forms.add(coursePnl);
 
         pnl.add(forms, BorderLayout.CENTER);
+        
+        JPanel southPnl = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        btnLogoutAdmin = new JButton("Logout");
+        btnExitAdmin = new JButton("Exit Application");
+        
+        southPnl.add(btnLogoutAdmin);
+        southPnl.add(btnExitAdmin);
+        
+        pnl.add(southPnl, BorderLayout.SOUTH);
+
+        btnLogoutAdmin.addActionListener(e -> cardLayout.show(mainPnl, "Login"));
+        btnExitAdmin.addActionListener(e -> System.exit(0));
         
         addStudentBtn.addActionListener(e -> {
             try {
