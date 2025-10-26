@@ -59,56 +59,43 @@ public class Server {
     }
 
     public void processClient() {
-        try {
-            getStreams();
-
+    try {
+        getStreams();
+        
+        while (true) {
             Object request = in.readObject();
-
-            do {
-                //can just call the object: 
-                //Student student = (Student) in.readObject;
-                //...
-                //Courses courses = (Courses) in.readObject;
-                //...
-                //Enrolment enrolment = (Enrolment) in.readObject;
-                //...
-                //but then client needs to do everything in this order exactly otherwise ClassCastException gets thrown and everything breaks
-
-                if (request instanceof Student) {
-                    Student student = (Student) request;
-                    StudentDAO dao = new StudentDAO();
-                    dao.addStudent(student);
-
-                } else if (request instanceof Course) {
-                    Course course = (Course) request;
-                    CourseDAO dao = new CourseDAO();
-                    dao.addCourse(course);
-
-                    ArrayList<Course> list = dao.getAllCourses();
-                    out.writeObject(list);
-                    out.flush();
-
-                } else if (request instanceof Enrolment) {
-                    Enrolment enrolment = (Enrolment) request;
-                    EnrolmentDAO dao = new EnrolmentDAO();
-                    dao.addEnrolment(enrolment);
-
-                    ArrayList<Enrolment> list = dao.getAllEnrolments();
-                    out.writeObject(list);
-
-//                } else if (request instanceof Admin) {
-//                    Admin l = (Admin) request;
-//
-                }
-
-            } while (true);
-
-        } catch (IOException | ClassNotFoundException ioe) {
-            System.out.println("IO Exception:" + ioe.getMessage());
-        } finally {
-            closeAll();
+            
+            if (request instanceof Student) {
+                Student student = (Student) request;
+                StudentDAO dao = new StudentDAO();
+                dao.addStudent(student);
+                
+            } else if (request instanceof Course) {
+                Course course = (Course) request;
+                CourseDAO dao = new CourseDAO();
+                dao.addCourse(course);
+                
+                ArrayList<Course> list = dao.getAllCourses();
+                out.writeObject(list);
+                out.flush();
+                
+            } else if (request instanceof Enrolment) {
+                Enrolment enrolment = (Enrolment) request;
+                EnrolmentDAO dao = new EnrolmentDAO();
+                dao.addEnrolment(enrolment);
+                
+                ArrayList<Enrolment> list = dao.getAllEnrolments();
+                out.writeObject(list);
+                out.flush();
+            }
         }
+        
+    } catch (IOException | ClassNotFoundException ioe) {
+        System.out.println("IO Exception " + ioe.getMessage());
+    } finally {
+        closeAll();
     }
+}
 
     public static void main(String[] args) {
         Server server = new Server();
