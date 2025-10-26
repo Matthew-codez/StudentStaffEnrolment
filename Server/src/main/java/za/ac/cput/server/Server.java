@@ -68,8 +68,18 @@ public class Server {
             
             if (request instanceof Student) {
                 Student student = (Student) request;
+                
+                // if the object that is sent by the client has no password it was sent by admin
+                if(student.getPassword() == null){
                 StudentDAO dao = new StudentDAO();
                 dao.addStudent(student);
+                }else {
+                    StudentDAO dao = new StudentDAO();
+                    dao.updatePassword(student);
+                }
+                
+                
+                
                 
             } else if (request instanceof Course) {
                 Course course = (Course) request;

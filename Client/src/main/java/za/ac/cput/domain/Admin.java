@@ -12,7 +12,7 @@ public class Admin implements Serializable {
         this.password = password;
     }
 
-    public String getUsername() {
+    public String getAdminName() {
         return adminName;
     }
 
