@@ -1,6 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
 package za.ac.cput.client;
 
 import java.awt.*;
@@ -10,10 +7,12 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import za.ac.cput.domain.Course;
+import za.ac.cput.domain.Student;
 
 /**
  *
- * @author user
+ * @author 
  */
 public class Client extends JFrame {
 
@@ -42,10 +41,15 @@ public class Client extends JFrame {
     private JButton enrollBtn;
     private JButton refreshBtn;
     private JButton viewBtn;
+    
+    private JLabel newStudentName;
+    private JLabel newStudentNumber;
+    private JTextField txtCourseId;
+    private JTextField txtCourseNames;
 
-    private final String dbUrl = "jdbc:derby://localhost:1527/StudentEnrollmentDB";
-    private final String dbUser = "administrator";
-    private final String dbPass = "admin";
+    private final String Url = "jdbc:derby://localhost:1527/StudentEnrollmentDB";
+    private final String Username = "administrator";
+    private final String Password = "admin";
 
     public Client() {
         super("Student Staff App - Client");
@@ -61,7 +65,7 @@ public class Client extends JFrame {
         mainPnl.add(AdminPnl(), "Admin");
         
         add(mainPnl);
-        cardLayout.show(mainPnl, "Student");
+        cardLayout.show(mainPnl, "Admin");
 
         communicate();
     }
@@ -176,9 +180,99 @@ public class Client extends JFrame {
     }
 
     private JPanel AdminPnl() {
-        JPanel panel = new JPanel();
-        panel.add(new JLabel("Admin Panel"));
-        return panel;
+        JPanel pnl = new JPanel(new BorderLayout(15, 15));
+        pnl.add(new JLabel("Administrator Dashboard", JLabel.CENTER), BorderLayout.NORTH);
+
+        JPanel forms = new JPanel(new GridLayout(2, 1, 20, 20));
+
+        JPanel studentFieldsPnl = new JPanel(new GridLayout(2, 2, 10, 10));
+        
+        JLabel newStudentName = new JLabel("Add Student Number: ");
+        JLabel newStudentNumber = new JLabel("Add Student Name: ");
+        
+        txtStudentNum = new JTextField();
+        txtStudentName = new JTextField();
+        
+        studentFieldsPnl.add(newStudentName);
+        studentFieldsPnl.add(txtStudentNum);
+        studentFieldsPnl.add(newStudentNumber);
+        studentFieldsPnl.add(txtStudentName);
+        
+        JButton addStudentBtn = new JButton("Add Student");
+
+        JPanel studentPnl = new JPanel(new BorderLayout(5, 5));
+        studentPnl.add(studentFieldsPnl, BorderLayout.CENTER);
+        
+        JPanel studentBtnPnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        studentBtnPnl.add(addStudentBtn);
+        
+        studentPnl.add(studentBtnPnl, BorderLayout.SOUTH);
+
+        
+        JPanel txtCoursePnl = new JPanel(new GridLayout(2, 2, 10, 10));
+        
+        txtCourseId = new JTextField();
+        txtCourseName = new JTextField();
+
+        txtCoursePnl.add(new JLabel("Course ID:"));
+        txtCoursePnl.add(txtCourseId);
+        txtCoursePnl.add(new JLabel("Course Name:"));
+        txtCoursePnl.add(txtCourseName);
+        
+        JButton addCourseBtn = new JButton("Add Course");
+
+        JPanel coursePnl = new JPanel(new BorderLayout(5, 5));
+        coursePnl.add(txtCoursePnl, BorderLayout.CENTER);
+        
+        JPanel courseBtnPnl = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        courseBtnPnl.add(addCourseBtn);
+        
+        coursePnl.add(courseBtnPnl, BorderLayout.SOUTH);
+        
+        forms.add(studentPnl);
+        forms.add(coursePnl);
+
+        pnl.add(forms, BorderLayout.CENTER);
+        
+        addStudentBtn.addActionListener(e -> {
+            try {
+                String studentNum = txtStudentNum.getText().trim();
+                String studentName = txtStudentName.getText().trim();
+
+                Student student = new Student(studentNum, studentName);
+
+                out.writeObject(student);
+                out.flush();
+
+                JOptionPane.showMessageDialog(this, "Student object sent to server.");
+                
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error sending student: " + ex.getMessage());
+            } catch (Exception ex) { 
+                JOptionPane.showMessageDialog(this, "An error occurred: " + ex.getMessage());
+            }
+        });
+
+        addCourseBtn.addActionListener(e -> {
+            try {
+                String courseId = txtCourseId.getText().trim();
+                String courseName = txtCourseName.getText().trim();
+
+                Course course = new Course(courseId, courseName);
+
+                out.writeObject(course);
+                out.flush();
+
+                JOptionPane.showMessageDialog(this, "Course object sent to server.");
+
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error sending course: " + ex.getMessage());
+            } catch (Exception ex) { 
+                JOptionPane.showMessageDialog(this, "An error occurred: " + ex.getMessage());
+            }
+        });
+                
+        return pnl;
     }
 
     private void Login() {

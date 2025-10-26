@@ -9,5 +9,9 @@ package za.ac.cput.domain;
  * @author user
  */
 public class Course {
+
+    public Course(String courseId, String courseName) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     
 }
