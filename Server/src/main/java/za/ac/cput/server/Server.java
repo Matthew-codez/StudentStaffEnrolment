@@ -93,9 +93,9 @@ public class Server {
                 Admin admin = (Admin) request;
                 AdminDAO dao = new AdminDAO();
                 ArrayList<Admin> list = dao.getAllAdmin();
+                Admin adminDb = list.get(0);
                 
                 if(!list.isEmpty()){
-                    Admin adminDb = list.get(0);
                     //compares the admin object being sent from client with the admin in the db
                     if (adminDb.getAdminName().equals(admin.getAdminName()) && adminDb.getPassword().equals(admin.getPassword())){
                         out.writeObject(adminDb);
