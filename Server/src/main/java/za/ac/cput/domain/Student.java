@@ -1,15 +1,19 @@
 package za.ac.cput.domain;
 
+import java.io.Serializable;
 
-public class Student {
-private int studentNum;
-private String studentName;
+public class Student implements Serializable {
 
-    public Student(int studentNum, String studentName) {
+    private int studentNum;
+    private String studentName;
+    private String password;
+
+    public Student(int studentNum, String studentName, String password) {
         this.studentNum = studentNum;
         this.studentName = studentName;
+        this.password = password;
     }
-    
+
     public int getStudentNum() {
         return studentNum;
     }
@@ -18,9 +22,13 @@ private String studentName;
         return studentName;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     @Override
     public String toString() {
-        return "Student{" + "studentNum=" + studentNum + ", studentName=" + studentName + '}';
+        return "Student{" + "studentNum=" + studentNum + ", studentName=" + studentName + ", password=" + password + '}';
     }
-    
+
 }

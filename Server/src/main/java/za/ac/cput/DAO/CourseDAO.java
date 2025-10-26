@@ -39,7 +39,7 @@ public class CourseDAO {
         }
         return courseList;
     }
-    public void AddCourse(Course course){
+    public void addCourse(Course course){
         System.out.println("Trying to add course");
         int ok;
         

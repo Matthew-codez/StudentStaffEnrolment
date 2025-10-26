@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package za.ac.cput.DAO;
 
 /**
@@ -16,7 +12,6 @@ import za.ac.cput.domain.Student;
 public class StudentDAO {
 
     private Connection conn;
-    private Statement stmt;
     private PreparedStatement pstmt;
 
     public ArrayList<Student> getAllStudents() {
@@ -29,7 +24,7 @@ public class StudentDAO {
             if (rs != null) {
                 while (rs.next()) {
                     studentList.add(new Student(rs.getInt("studentNum"),
-                            rs.getString("studentName")));
+                            rs.getString("studentName"),rs.getString("password")));
                 }
                 rs.close();
             }

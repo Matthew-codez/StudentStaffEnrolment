@@ -3,6 +3,7 @@ package za.ac.cput.domain;
 import java.io.Serializable;
 
 public class Course implements Serializable {
+
     private String courseId;
     private String courseName;
 
@@ -18,6 +19,7 @@ public class Course implements Serializable {
     public String getCourseName() {
         return courseName;
     }
+
     @Override
     public String toString() {
         return "Course{" + "courseId=" + courseId + ", courseName=" + courseName + "}";

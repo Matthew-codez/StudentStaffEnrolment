@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DBConnection {
         public static Connection derbyConnection() throws SQLException {
-            String dbUrl = "jdbc:derby://localhost:1527/StudentEnrollmentDB";
+            String dbUrl = "jdbc:derby://localhost:1527/StudentEnrolmentDB";
             String username = "administrator";
             String password = "admin";
             System.out.println("Inside Connection Package");

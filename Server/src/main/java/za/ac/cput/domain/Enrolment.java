@@ -1,6 +1,8 @@
 package za.ac.cput.domain;
 
-public class Enrolment {
+import java.io.Serializable;
+
+public class Enrolment implements Serializable {
     private int enrolId;
     private int studentNum;
     private String courseId;
