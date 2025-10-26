@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import za.ac.cput.DAO.AdminDAO;
 import za.ac.cput.DAO.CourseDAO;
 import za.ac.cput.DAO.EnrolmentDAO;
 import za.ac.cput.DAO.StudentDAO;
@@ -87,6 +88,23 @@ public class Server {
                 ArrayList<Enrolment> list = dao.getAllEnrolments();
                 out.writeObject(list);
                 out.flush();
+                
+            } else if(request instanceof Admin){
+                Admin admin = (Admin) request;
+                AdminDAO dao = new AdminDAO();
+                ArrayList<Admin> list = dao.getAllAdmin();
+                
+                if(!list.isEmpty()){
+                    Admin adminDb = list.get(0);
+                    //compares the admin object being sent from client with the admin in the db
+                    if (adminDb.getAdminName().equals(admin.getAdminName()) && adminDb.getPassword().equals(admin.getPassword())){
+                        out.writeObject(adminDb);
+                    }else{
+                        //failed login
+                        out.writeObject(null);
+                    }
+                    out.flush();
+                } 
             }
         }
         
