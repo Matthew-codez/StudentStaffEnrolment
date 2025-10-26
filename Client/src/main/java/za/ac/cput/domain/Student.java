@@ -1,17 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package za.ac.cput.domain;
 
-/**
- *
- * @author user
- */
-public class Student {
+import java.io.Serializable;
 
-    public Student(String studentNum, String studentName) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+public class Student implements Serializable {
+
+    private int studentNum;
+    private String studentName;
+    private String password;
+
+    public Student(int studentNum, String studentName, String password) {
+        this.studentNum = studentNum;
+        this.studentName = studentName;
+        this.password = password;
     }
-    
+
+    public int getStudentNum() {
+        return studentNum;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" + "studentNum=" + studentNum + ", studentName=" + studentName + ", password=" + password + '}';
+    }
+
 }

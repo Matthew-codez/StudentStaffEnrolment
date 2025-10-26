@@ -3,6 +3,7 @@ package za.ac.cput.domain;
 import java.io.Serializable;
 
 public class Admin implements Serializable {
+
     private String adminName;
     private String password;
 
@@ -18,8 +19,10 @@ public class Admin implements Serializable {
     public String getPassword() {
         return password;
     }
-     @Override
+
+    @Override
     public String toString() {
         return "Login{" + "adminName=" + adminName + ", password=" + password + '}';
     }
 }
+
