@@ -4,17 +4,22 @@ import java.io.Serializable;
 
 public class Student implements Serializable {
 
-    private int studentNum;
+    private String studentNum;
     private String studentName;
     private String password;
 
-    public Student(int studentNum, String studentName, String password) {
+    public Student(String studentNum, String studentName, String password) {
         this.studentNum = studentNum;
         this.studentName = studentName;
         this.password = password;
     }
 
-    public int getStudentNum() {
+    public Student(String studentNum, String studentName) {
+        this.studentNum = studentNum;
+        this.studentName = studentName;
+    }
+
+    public String getStudentNum() {
         return studentNum;
     }
 
@@ -32,3 +37,4 @@ public class Student implements Serializable {
     }
 
 }
+

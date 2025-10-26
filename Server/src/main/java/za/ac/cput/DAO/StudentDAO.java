@@ -23,7 +23,7 @@ public class StudentDAO {
             ResultSet rs = pstmt.executeQuery();
             if (rs != null) {
                 while (rs.next()) {
-                    studentList.add(new Student(rs.getInt("studentNum"),
+                    studentList.add(new Student(rs.getString("studentNum"),
                             rs.getString("studentName"),rs.getString("password")));
                 }
                 rs.close();
@@ -53,7 +53,7 @@ public class StudentDAO {
             conn = DBConnection.derbyConnection();
             String sql = "INSERT INTO STUDENT (student_num, student_name) VALUES(?,?)";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, student.getStudentNum());
+            pstmt.setString(1, student.getStudentNum());
             pstmt.setString(2, student.getStudentName());
             ok = pstmt.executeUpdate();
 
