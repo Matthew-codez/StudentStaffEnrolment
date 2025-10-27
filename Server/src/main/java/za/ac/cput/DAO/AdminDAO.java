@@ -22,7 +22,7 @@ public class AdminDAO {
             ResultSet rs = pstmt.executeQuery();
             if (rs != null) {
                 while (rs.next()) {
-                    adminList.add(new Admin(rs.getString("adminName"),
+                    adminList.add(new Admin(rs.getString("admin_Name"),
                             rs.getString("password")));
                 }
                 rs.close();

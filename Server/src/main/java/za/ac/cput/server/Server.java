@@ -60,28 +60,27 @@ public class Server {
     }
 
     public void processClient() {
-    try {
-        getStreams();
-        
-        while (true) {
-            Object request = in.readObject();
-            
-            if (request instanceof Student) {
-                Student student = (Student) request;
-                
-                // if the object that is sent by the client has no password it was sent by admin
-                if(student.getPassword() == null){
-                StudentDAO dao = new StudentDAO();
-                dao.addStudent(student);
-                }else {
+        try {
+            getStreams();
+
+            while (true) {
+                Object request = in.readObject();
+
+                if (request instanceof Student) {
+                    Student student = (Student) request;
                     StudentDAO dao = new StudentDAO();
-                    dao.updatePassword(student);
-                }
-                
-                
-                
-                
-            } else if (request instanceof Course) {
+                    dao.addStudent(student);
+                    Student studentDb = dao.getStudentByNum(student.getStudentNum());
+                    if (studentDb != null && studentDb.getPassword().equals(student.getPassword())) {
+
+                        out.writeObject(studentDb);
+                        out.flush();
+                    } else {
+                        out.writeObject(null);
+                        out.flush();
+                    }
+                    
+                    }else if (request instanceof Course) {
                 Course course = (Course) request;
                 CourseDAO dao = new CourseDAO();
                 dao.addCourse(course);
@@ -103,9 +102,9 @@ public class Server {
                 Admin admin = (Admin) request;
                 AdminDAO dao = new AdminDAO();
                 ArrayList<Admin> list = dao.getAllAdmin();
+                if(!list.isEmpty()){
                 Admin adminDb = list.get(0);
                 
-                if(!list.isEmpty()){
                     //compares the admin object being sent from client with the admin in the db
                     if (adminDb.getAdminName().equals(admin.getAdminName()) && adminDb.getPassword().equals(admin.getPassword())){
                         out.writeObject(adminDb);
@@ -116,14 +115,16 @@ public class Server {
                     out.flush();
                 } 
             }
-        }
-        
-    } catch (IOException | ClassNotFoundException ioe) {
+                }
+
+            }catch (IOException | ClassNotFoundException ioe) {
         System.out.println("IO Exception " + ioe.getMessage());
-    } finally {
+    }finally {
         closeAll();
     }
-}
+        }
+
+    
 
     public static void main(String[] args) {
         Server server = new Server();

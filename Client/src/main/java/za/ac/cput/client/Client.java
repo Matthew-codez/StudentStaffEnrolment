@@ -25,7 +25,7 @@ public class Client extends JFrame {
     private JButton loginBtn;
     private JLabel loginStatus;
 
-    private JTextField txtStudentNum, txtStudentName;
+    private JTextField txtStudentNum, txtStudentName, txtStudentPassword;
     private JTextField TxtCourseId, txtCourseName;
 
     private Socket socket;
@@ -35,7 +35,7 @@ public class Client extends JFrame {
     private String currentUser;
 
     private int currentStudentNum;
-    
+
     private JTable courseTable;
     private JTable enrolledTable;
     private DefaultTableModel courseModel;
@@ -93,51 +93,52 @@ public class Client extends JFrame {
             loginStatus.setText("Start the server first");
         }
     }
-    private JPanel setPassword(){
-        
-        JPanel pnl = new JPanel(new BorderLayout(10, 10));
-        pnl.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
+//    private JPanel setPassword(){
+//        
+//        JPanel pnl = new JPanel(new BorderLayout(10, 10));
+//        pnl.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
+//
+//        JLabel title = new JLabel("Student Enrolment System", JLabel.CENTER);
+//        pnl.add(title, BorderLayout.NORTH);
+//
+//        JPanel formPnl = new JPanel(new GridLayout(2,1, 10, 10));;
+//
+//        JLabel lblPassword = new JLabel("Set a new password:", JLabel.RIGHT);
+//        JTextField txtPassword = new JTextField();
+//        formPnl.add(lblPassword);
+//        formPnl.add(txtPassword);
+//        
+//        JButton btnSetPassword = new JButton("Set Password");
+//        btnSetPassword.setBackground(new Color(30, 60, 114));
+//        btnSetPassword.setForeground(Color.WHITE);
+//        
+//        formPnl.add(new JLabel());
+//        formPnl.add(btnSetPassword);
+//        
+//        btnSetPassword.addActionListener(e -> {
+//            String password = txtPassword.getText();
+//            try {
+//                if(password.isEmpty()){
+//                    JOptionPane.showMessageDialog(pnl,"Password is empty");
+//                }
+//                
+//                Student student = new Student();
+//                student.setStudentNum(currentStudentNum);
+//                student.setPassword(password);
+//                
+//                out.writeObject(student);
+//                out.flush();
+//                
+//                
+//
+//            }catch(IOException ioe){
+//                
+//            }
+//
+//        });
+//        return pnl;
+//    }
 
-        JLabel title = new JLabel("Student Enrolment System", JLabel.CENTER);
-        pnl.add(title, BorderLayout.NORTH);
-
-        JPanel formPnl = new JPanel(new GridLayout(2,1, 10, 10));;
-
-        JLabel lblPassword = new JLabel("Set a new password:", JLabel.RIGHT);
-        JTextField txtPassword = new JTextField();
-        formPnl.add(lblPassword);
-        formPnl.add(txtPassword);
-        
-        JButton btnSetPassword = new JButton("Set Password");
-        btnSetPassword.setBackground(new Color(30, 60, 114));
-        btnSetPassword.setForeground(Color.WHITE);
-        
-        formPnl.add(new JLabel());
-        formPnl.add(btnSetPassword);
-        
-        btnSetPassword.addActionListener(e -> {
-            String password = txtPassword.getText();
-            try {
-                if(password.isEmpty()){
-                    JOptionPane.showMessageDialog(pnl,"Password is empty");
-                }
-                
-                Student student = new Student();
-                student.setStudentNum(currentStudentNum);
-                student.setPassword(password);
-                
-                out.writeObject(student);
-                out.flush();
-                
-                
-
-            }catch(IOException ioe){
-                
-            }
-
-        });
-        return pnl;
-    }
     private JPanel LoginPnl() {
         JPanel pnl = new JPanel(new BorderLayout(10, 10));
         pnl.setBorder(BorderFactory.createEmptyBorder(50, 120, 50, 120));
@@ -145,7 +146,7 @@ public class Client extends JFrame {
         JLabel title = new JLabel("Student Enrolment System", JLabel.CENTER);
         pnl.add(title, BorderLayout.NORTH);
 
-        JPanel formPnl = new JPanel(new GridLayout(3, 2, 10, 10));;
+        JPanel formPnl = new JPanel(new GridLayout(4, 2, 10, 10));;
 
         JLabel lblUsername = new JLabel("Student or Admin Number:", JLabel.RIGHT);
         txtUsername = new JTextField();
@@ -174,28 +175,36 @@ public class Client extends JFrame {
         pnl.add(loginStatus, BorderLayout.SOUTH);
 
         loginBtn.addActionListener(e -> {
-            String username = txtUsername.getText();
-            String password = txtPassword.getText();
             try {
-                
-                int studentNum = Integer.parseInt(username);
-                
-                Student student = new Student(studentNum, password);
-                out.writeObject(student);
-                out.flush();
-                //if the textfield has a string it will move to the catch and send an admin object
-                //if it is a student nnumber or int it will execute the try and send a student object
-            } catch (NumberFormatException | IOException nfe) {
-                try {
-                    String adminName =username;
-                    Admin admin = new Admin(adminName, password);
-                    out.writeObject(admin);
-                    out.flush();
-                } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(this, "Error sending admin: " + ioe.getMessage());
-                }
-            }
+                String username = txtUsername.getText().trim();
+                String password = txtPassword.getText().trim();
 
+                Object response;
+                //does a check if the username has
+                if (username.matches("\\d+")) {
+                    response = new Student(username, null, password);
+                } else {
+                    response = new Admin(username, password);
+                }
+                out.writeObject(response);
+                out.flush();
+                response = in.readObject();
+
+                if (response instanceof Student) {
+                    cardLayout.show(mainPnl, "Student");
+                    return;
+                }
+
+                if (response instanceof Admin) {
+                    cardLayout.show(mainPnl, "Admin");
+                    return;
+                }
+
+                JOptionPane.showMessageDialog(this, "Login Failed ");
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Login error: " + ex.getMessage());
+            }
         });
 
         return pnl;
@@ -276,14 +285,18 @@ public class Client extends JFrame {
 
         JLabel newStudentName = new JLabel("Add Student Number: ");
         JLabel newStudentNumber = new JLabel("Add Student Name: ");
+        JLabel newStudentPassword = new JLabel("Add Student Password: ");
 
         txtStudentNum = new JTextField();
         txtStudentName = new JTextField();
+        txtStudentPassword = new JTextField();
 
         studentFieldsPnl.add(newStudentName);
         studentFieldsPnl.add(txtStudentNum);
         studentFieldsPnl.add(newStudentNumber);
         studentFieldsPnl.add(txtStudentName);
+        studentFieldsPnl.add(newStudentPassword);
+        studentFieldsPnl.add(txtStudentPassword);
 
         JButton addStudentBtn = new JButton("Add Student");
 
@@ -336,10 +349,9 @@ public class Client extends JFrame {
             try {
                 String studentNum = txtStudentNum.getText();
                 String studentName = txtStudentName.getText();
-                
-                int num = Integer.parseInt(studentNum);
-                
-                Student student = new Student(num, studentName);
+                String password = txtStudentPassword.getText();
+
+                Student student = new Student(studentNum, studentName, password);
 
                 out.writeObject(student);
                 out.flush();

@@ -23,8 +23,8 @@ public class StudentDAO {
             ResultSet rs = pstmt.executeQuery();
             if (rs != null) {
                 while (rs.next()) {
-                    studentList.add(new Student(rs.getInt("studentNum"),
-                            rs.getString("studentName"),rs.getString("password")));
+                    studentList.add(new Student(rs.getString("studentNum"),
+                            rs.getString("studentName"), rs.getString("password")));
                 }
                 rs.close();
             }
@@ -51,10 +51,11 @@ public class StudentDAO {
 
         try {
             conn = DBConnection.derbyConnection();
-            String sql = "INSERT INTO STUDENT (student_num, student_name) VALUES(?,?)";
+            String sql = "INSERT INTO STUDENT (student_num, student_name, password) VALUES(?,?,?)";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, student.getStudentNum());
+            pstmt.setString(1, student.getStudentNum());
             pstmt.setString(2, student.getStudentName());
+            pstmt.setString(3, student.getPassword());
             ok = pstmt.executeUpdate();
 
             if (ok > 0) {
@@ -75,24 +76,27 @@ public class StudentDAO {
             }
         }
     }
-    
-    public void updatePassword(Student student) {
-        System.out.println("Trying to update object");
-        int ok;
 
+    public Student getStudentByNum(String studentNum) {
+        Student student = null;
         try {
             conn = DBConnection.derbyConnection();
-            String sql = "UPDATE STUDENT SET password = ? WHERE studentNum = ?";
+            String sql = "SELECT * FROM STUDENT WHERE student_num = ?";
             pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, student.getPassword());
-            pstmt.setInt(2, student.getStudentNum());
-            ok = pstmt.executeUpdate();
+            pstmt.setString(1, studentNum);
+            ResultSet rs = pstmt.executeQuery();
 
-            if (ok > 0) {
-                System.out.println("Password updated: " + student.getStudentNum());
+            if (rs.next()) {
+                student = new Student(
+                        rs.getString("student_num"),
+                        rs.getString("student_name"),
+                        rs.getString("password")
+                );
             }
-        } catch (SQLException sqlEx) {
-            System.out.println("SQL Error updating student" + sqlEx.getMessage());
+            rs.close();
+
+        } catch (SQLException ex) {
+            System.out.println("SQL Error: " + ex.getMessage());
         } finally {
             try {
                 if (pstmt != null) {
@@ -101,10 +105,41 @@ public class StudentDAO {
                 if (conn != null) {
                     conn.close();
                 }
-            } catch (SQLException sqlEx) {
-                System.out.println("SQL Error " + sqlEx.getMessage());
+            } catch (SQLException ex) {
+                System.out.println("SQL Error: " + ex.getMessage());
             }
         }
+        return student;
     }
 
+//    public void updatePassword(Student student) {
+//        System.out.println("Trying to update object");
+//        int ok;
+//
+//        try {
+//            conn = DBConnection.derbyConnection();
+//            String sql = "UPDATE STUDENT SET password = ? WHERE studentNum = ?";
+//            pstmt = conn.prepareStatement(sql);
+//            pstmt.setString(1, student.getPassword());
+//            pstmt.setInt(2, student.getStudentNum());
+//            ok = pstmt.executeUpdate();
+//
+//            if (ok > 0) {
+//                System.out.println("Password updated: " + student.getStudentNum());
+//            }
+//        } catch (SQLException sqlEx) {
+//            System.out.println("SQL Error updating student" + sqlEx.getMessage());
+//        } finally {
+//            try {
+//                if (pstmt != null) {
+//                    pstmt.close();
+//                }
+//                if (conn != null) {
+//                    conn.close();
+//                }
+//            } catch (SQLException sqlEx) {
+//                System.out.println("SQL Error " + sqlEx.getMessage());
+//            }
+//        }
+//    }
 }
